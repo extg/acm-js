@@ -36,12 +36,12 @@
                 const maxIteration = 50
 
                 var acm = new ACM({
-                    img: image,
                     maxIteration,
                     minlen: Math.pow( .1,2 ),
                     maxlen: Math.pow( 5,2 ),
                     threshold: .1,
 
+                    // {data: [], width, height}
                     imageData: canvasContext.getImageData(0, 0, image.width, image.height),
                     // Но width и height так же прокидываются в imageData
                     width: image.width,
