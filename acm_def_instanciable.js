@@ -20,13 +20,18 @@ var ACM = function(){
 
         this.ctx = this.canvas.getContext("2d");
         this.ctx.drawImage(this.img, 0, 0);
-        this.ctx.strokeStyle = "#000";
-        this.ctx.lineWidth = this.margin;
-        this.ctx.strokeRect(0, 0, this.w, this.h);
 
-        var gradientFlow = this.ctx.getImageData(0, 0, this.w, this.h);
-        var result = ChamferDistance.compute(ChamferDistance.chamfer13, gradientFlow, threshold, this.w, this.h);
-        this.ctx.putImageData( gradientFlow,0,0 );
+        // Тут просто рисуется отступ для красоты
+        // this.ctx.strokeStyle = "#000";
+        // this.ctx.lineWidth = this.margin;
+        // this.ctx.strokeRect(0, 0, this.w, this.h);
+
+        var gradientFlow = this.ctx.getImageData(0, 0, this.w, this.h); // {data: [], height, width}
+        console.log(gradientFlow)
+        var result = ChamferDistance.compute(ChamferDistance.chamfer13, gradientFlow.data, threshold, gradientFlow.width, gradientFlow.height);
+
+        // Тут делается "засвет"
+        // this.ctx.putImageData( gradientFlow,0,0 );
 
         this.flowX = result[0];
         this.flowY = result[1];
@@ -203,14 +208,13 @@ var ChamferDistance = function (chamfer) {
         output[x][y] = newvalue;
     }
 
-    chamfer.compute = function (chamfermask, imageData, threshold, w, h) {
+    chamfer.compute = function (chamfermask, data, threshold, w, h) {
 
         chamfer.chamfer = chamfermask || chamfer.chamfer13;
 
         var gradient = chamfer.init2DArray(w, h);
         var flowX = chamfer.init2DArray(w, h);
         var flowY = chamfer.init2DArray(w, h);
-        var data = imageData.data;
         // initialize distance
         for (var y = 0; y < h; y++) {
             for (var x = 0; x < w; x++) {
@@ -218,9 +222,6 @@ var ChamferDistance = function (chamfer) {
                 var luma = 0.212 * ( data[id] / 0xFF ) + 0.7152 * ( data[id + 1] / 0xFF ) + 0.0722 * ( data[id + 2] / 0xFF );
                 if (luma <= threshold ) {
                     gradient[x][y] = -1;
-                    data[id] = data[id + 1] = data[id + 2] = 0;
-                }else{
-                    data[id]=data[id+1]=data[id+2]=0xFF;
                 }
 
             }
@@ -299,7 +300,6 @@ var ChamferDistance = function (chamfer) {
                 data[id+3] = 0xFF;
             }
         }
-        imageData.data = data;
 
         return [flowX, flowY];
     };

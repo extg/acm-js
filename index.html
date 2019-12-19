@@ -13,26 +13,48 @@
 
     <script src="acm_def_instanciable.js"></script>
     <script>
-        for (var i = 0; i <= 21; i++ ){
-            var img = new Image();
-            img.onload = function( e ){
-                console.log('image', e.target)
-                var acm = new ACM( {
-                    img: e.target,
-                    margin:4,
-                    maxIteration:250,
-                    minlen: Math.pow( .1,2 ),
-                    maxlen: Math.pow( 5,2 ),
-                    threshold: .1
-                } );
+        const loadImage = src => new Promise((resolve, reject) => {
+            let image = new Image();
+            image.addEventListener('load', resolve);
+            image.addEventListener('error', reject);
+            image.src = src;
+        })
 
-                acm.canvas.addEventListener( "mousedown" , function () {
-                  acm.compute();
-                });
-            };
-            img.src = "sample"+i+".jpg";
-        }
-//            img.src = "blog/rooster.jpg";
+        loadImage('/sample21.jpg')
+            .then(event => {
+                const image = event.target
+                const canvas = document.createElement('canvas')
+                document.body.appendChild( canvas )
+
+                canvas.width = image.width;
+                canvas.height = image.height;
+
+                const canvasContext = canvas.getContext('2d')
+                canvasContext.drawImage(image, 0, 0, image.width, image.height)
+
+                return canvasContext
+            })
+
+
+        // deprecated
+        var img = new Image();
+
+        img.onload = function( e ){
+            console.log('image', e.target)
+            var acm = new ACM( {
+                img: e.target,
+                margin:4,
+                maxIteration:250,
+                minlen: Math.pow( .1,2 ),
+                maxlen: Math.pow( 5,2 ),
+                threshold: .1
+            } );
+
+            acm.canvas.addEventListener( "mousedown" , function () {
+                acm.compute();
+            });
+        };
+        img.src = "sample21.jpg";
     </script>
 </body>
 </html>
