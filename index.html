@@ -13,6 +13,7 @@
 
     <script src="acm_def_instanciable.js"></script>
     <script>
+        /*
         const loadImage = src => new Promise((resolve, reject) => {
             let image = new Image();
             image.addEventListener('load', resolve);
@@ -34,7 +35,7 @@
 
                 return canvasContext
             })
-
+        */
 
         // deprecated
         var img = new Image();
@@ -44,10 +45,13 @@
             var acm = new ACM( {
                 img: e.target,
                 margin:4,
-                maxIteration:250,
+                maxIteration:50,
                 minlen: Math.pow( .1,2 ),
                 maxlen: Math.pow( 5,2 ),
-                threshold: .1
+                threshold: .1,
+                render(...args) {
+
+                }
             } );
 
             acm.canvas.addEventListener( "mousedown" , function () {

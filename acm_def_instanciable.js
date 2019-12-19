@@ -21,6 +21,12 @@ var ACM = function(){
         this.ctx = this.canvas.getContext("2d");
         this.ctx.drawImage(this.img, 0, 0);
 
+        this.sourceImageData = this.ctx.getImageData(0, 0, this.w, this.h)
+
+        // this.ctx.clearRect(0, 0, this.w, this.h);
+        // this.ctx.drawImage(this.sourceImageData.data, 0, 0);
+        // throw new Error("aaa")
+
         // Тут просто рисуется отступ для красоты
         // this.ctx.strokeStyle = "#000";
         // this.ctx.lineWidth = this.margin;
@@ -36,11 +42,14 @@ var ACM = function(){
         this.flowX = result[0];
         this.flowY = result[1];
 
+        console.log(result)
+
         //binding the scope for animationFrameRequests
         this.update = this.update.bind(this);
 
     }
 
+    // compute -> update -> loop, _render ->
     function compute( _onComplete ) {
         this.onComplete = _onComplete;
         this.snake = [];
@@ -58,22 +67,29 @@ var ACM = function(){
         this.length = 0;
         this.last = this.getsnakelength();
         cancelAnimationFrame(this.interval);
+
+        // update вызывается рекурсивно
         this.update();
-        this.render();
+        // _render и так вызывается в update
+        // this._render();
+    }
+
+    function renderIteratee() {
+
     }
 
     function update() {
 
         this.loop();
-        this.render();
+        this._render();
         this.length = this.getsnakelength();
         if (++this.it >= this.maxIteration) {
             console.log("points:", this.snake.length, 'iteration:', this.it);
             cancelAnimationFrame(this.interval);
-            this.render(true);
-            if( this.onComplete ){
-                this.onComplete( this.snake );
-            }
+            this._render(true);
+            // if( this.onComplete ){
+            //     this.onComplete( this.snake );
+            // }
         } else {
             this.interval = requestAnimationFrame(this.update);
             this.last = this.length;
@@ -124,10 +140,9 @@ var ACM = function(){
         return this.snake;
     }
 
-    function render(finished) {
-
+    function _render(finished) {
         this.ctx.clearRect(0, 0, this.w, this.h);
-        this.ctx.drawImage(this.img, 0, 0, this.w, this.h);
+        this.ctx.drawImage(this.img, 0, 0);
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "#fff";
         this.ctx.fillStyle = Boolean(finished) ? "rgba( 255,0,0, .5 )" : "rgba(255,255,255,.5 )";
@@ -143,7 +158,6 @@ var ACM = function(){
         this.ctx.fillStyle = "#FFF";
         this.ctx.font = "10px Verdana";
         this.ctx.fillText("iteration: " + this.it + " / " + this.maxIteration + ' length: ' + this.last.toFixed(2), 10, 10);
-
     }
 
 
@@ -172,7 +186,7 @@ var ACM = function(){
     p.compute = compute;
     p.update = update;
     p.loop = loop;
-    p.render = render;
+    p._render = _render;
     p.getsnakelength = getsnakelength;
     return ACM;
 }({});
@@ -294,7 +308,7 @@ var ChamferDistance = function (chamfer) {
                 flowX[x][y] = dx / max;
                 flowY[x][y] = dy / max;
 
-                //render values to imageData
+                //_render values to imageData
                 id = ( y * w + x ) * 4;
                 data[id] = data[id+1] = data[id+2] = 0xFF - map( gradient[x][y],min,max/2, 0,0xFF );
                 data[id+3] = 0xFF;
