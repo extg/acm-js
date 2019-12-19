@@ -13,7 +13,7 @@
 
     <script src="acm_def_instanciable.js"></script>
     <script>
-        /*
+
         const loadImage = src => new Promise((resolve, reject) => {
             let image = new Image();
             image.addEventListener('load', resolve);
@@ -33,10 +33,46 @@
                 const canvasContext = canvas.getContext('2d')
                 canvasContext.drawImage(image, 0, 0, image.width, image.height)
 
-                return canvasContext
-            })
-        */
+                var acm = new ACM({
+                    img: image,
+                    margin:4,
+                    maxIteration:50,
+                    minlen: Math.pow( .1,2 ),
+                    maxlen: Math.pow( 5,2 ),
+                    threshold: .1,
 
+                    imageData: canvasContext.getImageData(0, 0, image.width, image.height),
+                    render(snake, finished) {
+                        canvasContext.clearRect(0, 0, this.w, this.h);
+                        canvasContext.drawImage(this.img, 0, 0);
+                        canvasContext.lineWidth = 1;
+                        canvasContext.strokeStyle = "#fff";
+                        canvasContext.fillStyle = Boolean(finished) ? "rgba( 255,0,0, .5 )" : "rgba(255,255,255,.5 )";
+                        canvasContext.beginPath();
+
+                        snake.forEach(function (p) {
+                            canvasContext.lineTo(p[0], p[1]);
+                        });
+
+                        canvasContext.closePath();
+                        canvasContext.stroke();
+                        canvasContext.fill();
+
+                        canvasContext.fillStyle = "#FFF";
+                        canvasContext.font = "10px Verdana";
+                        canvasContext.fillText("iteration: " + this.it + " / " + this.maxIteration + ' length: ' + this.last.toFixed(2), 10, 10);
+
+
+                    }
+                });
+
+                canvas.addEventListener( "mousedown" , function () {
+                    acm.compute();
+                });
+            })
+
+
+        /*
         // deprecated
         var img = new Image();
 
@@ -59,6 +95,7 @@
             });
         };
         img.src = "sample21.jpg";
+        */
     </script>
 </body>
 </html>
