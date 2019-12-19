@@ -24,6 +24,8 @@ const ACM = function(){
         this.flowX = result[0];
         this.flowY = result[1];
 
+        this.snake = params.snake || [];
+
         //binding the scope for animationFrameRequests
         this.update = this.update.bind(this);
         this.render = params.render;
@@ -32,7 +34,6 @@ const ACM = function(){
     // compute -> update -> loop, _render ->
     function compute( _onComplete ) {
         this.onComplete = _onComplete;
-        this.snake = [];
         var count = 20;
         var r = Math.max(this.w, this.h);
         for (var i = 0; i < count; i++) {
