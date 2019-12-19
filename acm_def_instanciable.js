@@ -1,7 +1,7 @@
 /**
  * Created by nico on 16/12/2015.
  */
-export const ACM = function(){
+const ACM = function(){
 
     function ACM( params ){
 
@@ -157,7 +157,7 @@ export const ACM = function(){
  * @author Code by Xavier Philippeau
  * Kernels by Verwer, Borgefors and Thiel
  */
-export const ChamferDistance = function (chamfer) {
+const ChamferDistance = function (chamfer) {
 
     chamfer.cheessboard = [[1, 0, 1], [1, 1, 1]];
     chamfer.chamfer3 = [[1, 0, 3], [1, 1, 4]];
