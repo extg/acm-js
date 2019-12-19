@@ -15,7 +15,9 @@ var ACM = function(){
         this.h = params.height;
 
         // {data: [], height, width}
-        const imageData = params.imageData || this.ctx.getImageData(0, 0, this.w, this.h)
+        const imageData = params.imageData
+
+        console.log(imageData)
 
         var result = ChamferDistance.compute(ChamferDistance.chamfer13, imageData.data, threshold, imageData.width, imageData.height);
 
