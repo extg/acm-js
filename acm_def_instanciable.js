@@ -5,48 +5,26 @@ var ACM = function(){
 
     function ACM( params ){
 
-        this.img = params.img;
-        this.margin = params.margin || 4;
+        this.margin = 4;
         this.maxIteration = params.maxIteration || 250;
         this.minlen = params.minlen || Math.pow( .1, 2 );
         this.maxlen = params.maxlen || Math.pow( 5, 2 );
         var threshold = params.threshold || .1;
 
-        // Вынесли создание канваса отсюда
-        // this.canvas = document.createElement("canvas");
-        // document.body.appendChild( this.canvas );
-
-        this.w = this.img.width;
-        this.h = this.img.height;
-
-        // this.ctx = this.canvas.getContext("2d");
-        // this.ctx.drawImage(this.img, 0, 0);
-
-
-
+        this.w = params.width;
+        this.h = params.height;
 
         // {data: [], height, width}
         const imageData = params.imageData || this.ctx.getImageData(0, 0, this.w, this.h)
 
-        // Тут просто рисуется отступ для красоты
-        // this.ctx.strokeStyle = "#000";
-        // this.ctx.lineWidth = this.margin;
-        // this.ctx.strokeRect(0, 0, this.w, this.h);
-
         var result = ChamferDistance.compute(ChamferDistance.chamfer13, imageData.data, threshold, imageData.width, imageData.height);
-
-        // Тут делается "засвет"
-        // this.ctx.putImageData( gradientFlow,0,0 );
 
         this.flowX = result[0];
         this.flowY = result[1];
 
-        console.log(result)
-
         //binding the scope for animationFrameRequests
         this.update = this.update.bind(this);
         this.render = params.render;
-
     }
 
     // compute -> update -> loop, _render ->
@@ -137,26 +115,7 @@ var ACM = function(){
     }
 
     function _render(finished) {
-        this.render(this.snake, finished);
-
-        // Вынесли рендер наружу
-        // this.ctx.clearRect(0, 0, this.w, this.h);
-        // this.ctx.drawImage(this.img, 0, 0);
-        // this.ctx.lineWidth = 1;
-        // this.ctx.strokeStyle = "#fff";
-        // this.ctx.fillStyle = Boolean(finished) ? "rgba( 255,0,0, .5 )" : "rgba(255,255,255,.5 )";
-        // this.ctx.beginPath();
-        // var scope = this;
-        // this.snake.forEach(function (p) {
-        //     scope.ctx.lineTo(p[0], p[1]);
-        // });
-        // this.ctx.closePath();
-        // this.ctx.stroke();
-        // this.ctx.fill();
-
-        // this.ctx.fillStyle = "#FFF";
-        // this.ctx.font = "10px Verdana";
-        // this.ctx.fillText("iteration: " + this.it + " / " + this.maxIteration + ' length: ' + this.last.toFixed(2), 10, 10);
+        this.render(this.snake, this.it, this.last, finished);
     }
 
 

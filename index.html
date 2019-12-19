@@ -33,18 +33,22 @@
                 const canvasContext = canvas.getContext('2d')
                 canvasContext.drawImage(image, 0, 0, image.width, image.height)
 
+                const maxIteration = 50
+
                 var acm = new ACM({
                     img: image,
-                    margin:4,
-                    maxIteration:50,
+                    maxIteration,
                     minlen: Math.pow( .1,2 ),
                     maxlen: Math.pow( 5,2 ),
                     threshold: .1,
 
                     imageData: canvasContext.getImageData(0, 0, image.width, image.height),
-                    render(snake, finished) {
-                        canvasContext.clearRect(0, 0, this.w, this.h);
-                        canvasContext.drawImage(this.img, 0, 0);
+                    // Но width и height так же прокидываются в imageData
+                    width: image.width,
+                    height: image.height,
+                    render(snake, i, iLength, finished) {
+                        canvasContext.clearRect(0, 0, image.width, image.height);
+                        canvasContext.drawImage(image, 0, 0);
                         canvasContext.lineWidth = 1;
                         canvasContext.strokeStyle = "#fff";
                         canvasContext.fillStyle = Boolean(finished) ? "rgba( 255,0,0, .5 )" : "rgba(255,255,255,.5 )";
@@ -60,9 +64,7 @@
 
                         canvasContext.fillStyle = "#FFF";
                         canvasContext.font = "10px Verdana";
-                        canvasContext.fillText("iteration: " + this.it + " / " + this.maxIteration + ' length: ' + this.last.toFixed(2), 10, 10);
-
-
+                        canvasContext.fillText("iteration: " + i + " / " + maxIteration + ' length: ' + iLength.toFixed(2), 10, 10)
                     }
                 });
 
@@ -70,32 +72,6 @@
                     acm.compute();
                 });
             })
-
-
-        /*
-        // deprecated
-        var img = new Image();
-
-        img.onload = function( e ){
-            console.log('image', e.target)
-            var acm = new ACM( {
-                img: e.target,
-                margin:4,
-                maxIteration:50,
-                minlen: Math.pow( .1,2 ),
-                maxlen: Math.pow( 5,2 ),
-                threshold: .1,
-                render(...args) {
-
-                }
-            } );
-
-            acm.canvas.addEventListener( "mousedown" , function () {
-                acm.compute();
-            });
-        };
-        img.src = "sample21.jpg";
-        */
     </script>
 </body>
 </html>
